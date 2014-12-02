@@ -1,0 +1,250 @@
+'ssf-begin
+';
+
+'workbook
+'   name;attach-labels-chart.xlsm/AttachLabels
+
+'book-identity
+
+'require
+
+'worksheet
+'   name;readme/Sheet1
+
+'cells-formula
+'  address;A1:A3
+'         ;// 改1MS謹製ラベル付チャート
+'         ;// 自律, 自由, 公正, http://paidforeveryone.wordpress.com
+'         ;// Tomizono - mocvba.com
+'  address;A5:A6
+'         ;既存のチャートに、ラベル文字列を追加設定する、
+'         ;MS謹製マクロの改造版。
+'  address;A9
+'         ;http://support.microsoft.com/KB/213750
+'  address;A12:C15
+'         ;label
+'         ;x
+'         ;y
+'         ;carrot
+'         ;1
+'         ;5
+'         ;onion
+'         ;2
+'         ;6
+'         ;potato
+'         ;3
+'         ;4
+'  address;A18:A21
+'         ;このように、チャートデータの左隣にラベルを置いて、
+'         ;あらかじめ、 x-y の範囲で散布図などを作っておいてから、
+'         ;そのチャートを選んだ状態でマクロを流して、
+'         ;ラベルを付与する仕組み。
+'  address;A23
+'         ;チャートが持っているデータ範囲の文字列から、左隣の場所を特定している。
+'  address;A25:A27
+'         ;このマクロは、以下にオリジナルを貼っておくが、
+'         ;複数系列の散布図だとうまくないので、
+'         ;それに対応する改造を行った。
+'  address;A30
+'         ;以下のオリジナルの著作権は Microsoft にあり、本マクロはそれに軽く手を加えただけである。
+'  address;A32
+'         ;Sub AttachLabelsToPoints()
+'  address;A34:A35
+'         ;   'Dimension variables.
+'         ;   Dim Counter As Integer, ChartName As String, xVals As String
+'  address;A37:A38
+'         ;   ' Disable screen updating while the subroutine is run.
+'         ;   Application.ScreenUpdating = False
+'  address;A40:A41
+'         ;   'Store the formula for the first series in "xVals".
+'         ;   xVals = ActiveChart.SeriesCollection(1).Formula
+'  address;A43:A49
+'         ;   'Extract the range for the data from xVals.
+'         ;   xVals = Mid(xVals, InStr(InStr(xVals, ","), xVals, _
+'         ;      Mid(Left(xVals, InStr(xVals, "!") - 1), 9)))
+'         ;   xVals = Left(xVals, InStr(InStr(xVals, "!"), xVals, ",") - 1)
+'         ;   Do While Left(xVals, 1) = ","
+'         ;      xVals = Mid(xVals, 2)
+'         ;   Loop
+'  address;A51:A57
+'         ;   'Attach a label to each data point in the chart.
+'         ;   For Counter = 1 To Range(xVals).Cells.Count
+'         ;     ActiveChart.SeriesCollection(1).Points(Counter).HasDataLabel = _
+'         ;         True
+'         ;      ActiveChart.SeriesCollection(1).Points(Counter).DataLabel.Text = _
+'         ;         Range(xVals).Cells(Counter, 1).Offset(0, -1).Value
+'         ;   Next Counter
+'  address;A59
+'         ;End Sub
+
+'cells-height
+'   unit;pt
+'  address;A12:A15
+'   repeat;4
+'         ;14.25
+'  address;A18
+'         ;14.25
+'  address;A30
+'         ;18.75
+
+'cells-color
+'  address;A30
+'         ;#FF0000
+
+'cells-font-name
+'  address;A12:C15
+'   repeat;12
+'         ;Calibri (テーマの本文)
+'  address;A18
+'         ;Calibri (テーマの本文)
+
+'cells-font-size
+'  address;A12:C15
+'   repeat;12
+'         ;12
+'  address;A18
+'         ;12
+'  address;A30
+'         ;16
+
+'cells-h-align
+'  address;A12:C15
+'   repeat;12
+'         ;center
+
+'cells-v-align
+'  address;A1:C11
+'   repeat;33
+'         ;center
+'  address;A16:C59
+'   repeat;132
+'         ;center
+
+'worksheet
+'   name;howto/Sheet2
+
+'cells-formula
+'  address;A1
+'         ;改造点と実行方法
+'  address;B4:F7
+'         ;x
+'         ;y1
+'         ;y2
+'         ;label1
+'         ;label2
+'         ;1
+'         ;5
+'         ;7
+'         ;carrot
+'         ;apple
+'         ;2
+'         ;6
+'         ;8
+'         ;onion
+'         ;orange
+'         ;3
+'         ;4
+'         ;9
+'         ;potato
+'         ;
+'  address;B10:B12
+'         ;上記のようなデータを前提とする。
+'         ;複数列ラベルを記述するために、列をMS版と逆の右隣とした。
+'         ;また、ラベルも列に対応して複数列を入れる。
+'  address;B14:B16
+'         ;動作スキップに対応し、
+'         ;ラベル名がブランクセルだと、上書きしないで、現状維持とする。
+'         ;ブランクでない、スペース文字などであれば、それで上書きする。
+'  address;B18:B20
+'         ;操作はMS版と同じで、
+'         ;上記、x, y1, y2範囲でチャートを作成した後、
+'         ;そのチャートがActiveな状態で、次のマクロを実行する。
+'  address;B22
+'         ;AttachLabelsToPointsAlt1
+
+'cells-height
+'   unit;pt
+'  address;A4:A7
+'   repeat;4
+'         ;14.25
+
+'cells-font-name
+'  address;B4:F7
+'   repeat;20
+'         ;Calibri (テーマの本文)
+
+'cells-font-size
+'  address;B4:F7
+'   repeat;20
+'         ;12
+
+'cells-h-align
+'  address;B4:F7
+'   repeat;20
+'         ;center
+
+'cells-v-align
+'  address;A1:F22
+'   repeat;19
+'         ;center
+'     skip;5
+'         ;center
+'     skip;5
+'         ;center
+'     skip;5
+'         ;center
+'     skip;5
+'   repeat;90
+'         ;center
+
+'module
+'   name;AttachLabelsToPointsAlt1
+'{{{
+Option Explicit
+
+Public Sub AttachLabelsToPointsAlt1()
+    Application.ScreenUpdating = False
+    
+    AttachLabelsToPoints ActiveChart
+    
+    Application.ScreenUpdating = True
+End Sub
+
+Private Function AttachLabelsToPoints(C As Chart)
+    Dim Counter As Integer
+    Dim yVals As String
+    Dim iSeries As Long
+    Dim Label As String
+    Dim SeriesNum As Long
+    
+    SeriesNum = C.SeriesCollection.Count
+    For iSeries = 1 To SeriesNum
+    
+        'Store the formula for the first series in "yVals".
+        yVals = C.SeriesCollection(iSeries).Formula
+        
+        'Extract the range for the data from yVals.
+        yVals = Mid(yVals, InStr(InStr(InStr(yVals, ",") + 1, yVals, ","), yVals, _
+            Mid(Left(yVals, InStr(yVals, "!") - 1), 9)))
+        yVals = Left(yVals, InStr(InStr(yVals, "!"), yVals, ",") - 1)
+        Do While Left(yVals, 1) = ","
+            yVals = Mid(yVals, 2)
+        Loop
+        
+        'Attach a label to each data point in the chart.
+        For Counter = 1 To Range(yVals).Cells.Count
+            Label = Range(yVals).Cells(Counter, 1).Offset(0, SeriesNum).Value
+            If Label <> "" Then
+                C.SeriesCollection(iSeries).Points(Counter).HasDataLabel = True
+                C.SeriesCollection(iSeries).Points(Counter).DataLabel.Text = Label
+            End If
+        Next Counter
+    
+    Next iSeries
+
+End Function
+
+'}}}
+
+'ssf-end
+
